@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Wasi">
+<meta name="apple-mobile-web-app-title" content="Lis">
 <meta name="theme-color" content="#1a5c3a">
-<title>Wasi 💰 — Personal Finance</title>
+<title>Lis 💰 — Personal Finance</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <!-- Official Supabase JS client — fixes CORS issues with raw fetch -->
@@ -293,11 +293,11 @@ input,button,select,textarea{font-family:'DM Sans',sans-serif}
 
 <!-- AUTH -->
 <div id="auth-screen" style="display:none">
-  <div class="auth-logo">Wasi 💰</div>
+  <div class="auth-logo">Lis 💰</div>
   <div class="auth-tagline">your personal money command center</div>
   <div class="auth-card" id="auth-card">
     <div id="auth-setup-step1">
-      <div class="auth-step-title">Welcome, Wasi</div>
+      <div class="auth-step-title">Welcome, Lis</div>
       <div class="auth-step-sub">Set up your login</div>
       <div class="auth-type-grid">
         <div class="auth-type-opt sel" onclick="selectAuthType('pin',this)"><div class="auth-type-ico">🔢</div><div class="auth-type-nm">PIN</div></div>
@@ -352,9 +352,9 @@ input,button,select,textarea{font-family:'DM Sans',sans-serif}
 <!-- MAIN APP -->
 <div id="app">
   <div class="topnav">
-    <div class="nav-logo">Wasi 💰</div>
+    <div class="nav-logo">Lis 💰</div>
     <div class="nav-sync"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">—</span></div>
-    <div class="nav-user" onclick="lockApp()"><span id="nav-user-nm">Wasi</span> 🔒</div>
+    <div class="nav-user" onclick="lockApp()"><span id="nav-user-nm">Lis</span> 🔒</div>
     <div class="nav-sp"></div>
     <div class="nav-date" id="nav-date"></div>
     <div class="nav-tabs">
@@ -663,7 +663,7 @@ input,button,select,textarea{font-family:'DM Sans',sans-serif}
     </div>
     <div class="card settings-section">
       <div class="settings-section-title">ℹ️ About</div>
-      <div class="settings-row"><div class="settings-row-label">Wasi 💰</div><div style="font-size:12px;color:var(--text3)">v2.1 · Cloud-synced across all devices</div></div>
+      <div class="settings-row"><div class="settings-row-label">Lis 💰</div><div style="font-size:12px;color:var(--text3)">v2.1 · Cloud-synced across all devices</div></div>
       <div class="settings-row"><div class="settings-row-label">Storage</div><div style="font-size:12px;color:var(--text3)">Supabase · Your data, private & secure</div></div>
     </div>
   </div>
@@ -864,12 +864,12 @@ async function cloudLoad() {
       appData = data.data;
       lastSyncTime = data.updated_at;
       ensureIntegrity();
-      LS('wasi_cache', appData);
+      LS('Lis_cache', appData);
       setSyncUI('online', 'Synced ✓');
       updateLastSyncLabel();
     } else {
       // First time — no row exists yet
-      const cached = LS('wasi_cache');
+      const cached = LS('Lis_cache');
       appData = cached || defaultData();
       ensureIntegrity();
       await cloudSave(true);
@@ -881,7 +881,7 @@ async function cloudLoad() {
 }
 
 function useCachedData() {
-  const cached = LS('wasi_cache');
+  const cached = LS('Lis_cache');
   if (cached) {
     appData = cached;
     ensureIntegrity();
@@ -894,7 +894,7 @@ function useCachedData() {
 
 // saveData: instantly cache locally, debounce cloud save by 1.5s
 function saveData() {
-  LS('wasi_cache', appData);
+  LS('Lis_cache', appData);
   clearTimeout(syncTimer);
   setSyncUI('saving', 'Saving...');
   syncTimer = setTimeout(() => cloudSave(false), 1500);
@@ -1062,19 +1062,19 @@ function goAuthStep2(){
 function updateSetupDots(err){for(let i=0;i<4;i++){const el=document.getElementById('ps'+i);el.classList.toggle('filled',i<pinSetupBuf.length);el.classList.toggle('error',!!err);}}
 function pinSetupKey(d){if(pinSetupBuf.length>=4)return;pinSetupBuf+=d;updateSetupDots();if(pinSetupBuf.length===4){if(pinSetupStage===0){pinFirst=pinSetupBuf;pinSetupBuf='';pinSetupStage=1;document.getElementById('auth-s2-sub').textContent='Confirm your PIN';document.getElementById('pin-setup-hint').textContent='';updateSetupDots();}else{if(pinSetupBuf===pinFirst)finishSetup();else{document.getElementById('pin-setup-hint').textContent='PINs do not match. Try again.';updateSetupDots(true);setTimeout(()=>{pinSetupBuf='';pinSetupStage=0;pinFirst='';document.getElementById('auth-s2-sub').textContent='Enter a 4-digit PIN';document.getElementById('pin-setup-hint').textContent='';updateSetupDots();},700);}}}}
 function pinSetupDel(){pinSetupBuf=pinSetupBuf.slice(0,-1);updateSetupDots();}
-function savePassAuth(){const u=document.getElementById('su-user').value.trim();const p=document.getElementById('su-pass').value;const p2=document.getElementById('su-pass2').value;if(authType==='user-pass'&&!u){document.getElementById('pass-err').textContent='Username required';return;}if(!p||p.length<4){document.getElementById('pass-err').textContent='Min 4 characters';return;}if(p!==p2){document.getElementById('pass-err').textContent='Passwords do not match';return;}LS('wasi_auth',{type:authType,pin:null,username:u,password:btoa(p)});finishSetup();}
-function finishSetup(){if(authType==='pin')LS('wasi_auth',{type:'pin',pin:btoa(pinFirst),username:'Wasi',password:null});setUnlocked();bootApp();}
-function showLoginScreen(){const auth=LS('wasi_auth');['auth-setup-step1','auth-setup-step2'].forEach(id=>document.getElementById(id).classList.add('hide'));document.getElementById('auth-login').classList.remove('hide');if(!auth||auth.type==='pin'){document.getElementById('login-pin-wrap').classList.remove('hide');document.getElementById('login-pass-wrap').classList.add('hide');document.getElementById('login-sub').textContent='Enter your PIN';pinLoginBuf='';updateLoginDots();}else{document.getElementById('login-pin-wrap').classList.add('hide');document.getElementById('login-pass-wrap').classList.remove('hide');if(auth.type==='user-pass')document.getElementById('login-user-field').classList.remove('hide');document.getElementById('login-sub').textContent='Enter your password';}}
+function savePassAuth(){const u=document.getElementById('su-user').value.trim();const p=document.getElementById('su-pass').value;const p2=document.getElementById('su-pass2').value;if(authType==='user-pass'&&!u){document.getElementById('pass-err').textContent='Username required';return;}if(!p||p.length<4){document.getElementById('pass-err').textContent='Min 4 characters';return;}if(p!==p2){document.getElementById('pass-err').textContent='Passwords do not match';return;}LS('Lis_auth',{type:authType,pin:null,username:u,password:btoa(p)});finishSetup();}
+function finishSetup(){if(authType==='pin')LS('Lis_auth',{type:'pin',pin:btoa(pinFirst),username:'Lis',password:null});setUnlocked();bootApp();}
+function showLoginScreen(){const auth=LS('Lis_auth');['auth-setup-step1','auth-setup-step2'].forEach(id=>document.getElementById(id).classList.add('hide'));document.getElementById('auth-login').classList.remove('hide');if(!auth||auth.type==='pin'){document.getElementById('login-pin-wrap').classList.remove('hide');document.getElementById('login-pass-wrap').classList.add('hide');document.getElementById('login-sub').textContent='Enter your PIN';pinLoginBuf='';updateLoginDots();}else{document.getElementById('login-pin-wrap').classList.add('hide');document.getElementById('login-pass-wrap').classList.remove('hide');if(auth.type==='user-pass')document.getElementById('login-user-field').classList.remove('hide');document.getElementById('login-sub').textContent='Enter your password';}}
 function updateLoginDots(err){for(let i=0;i<4;i++){const el=document.getElementById('pl'+i);el.classList.toggle('filled',i<pinLoginBuf.length);el.classList.toggle('error',!!err);}}
 function pinLoginKey(d){if(pinLoginBuf.length>=4)return;pinLoginBuf+=d;updateLoginDots();if(pinLoginBuf.length===4)setTimeout(checkPinLogin,120);}
 function pinLoginDel(){pinLoginBuf=pinLoginBuf.slice(0,-1);updateLoginDots();}
-function checkPinLogin(){const auth=LS('wasi_auth');if(auth&&atob(auth.pin)===pinLoginBuf){setUnlocked();bootApp();}else{updateLoginDots(true);document.getElementById('auth-card').classList.add('shk');setTimeout(()=>{pinLoginBuf='';updateLoginDots();document.getElementById('auth-card').classList.remove('shk');},500);}}
-function loginPass(){const auth=LS('wasi_auth');const u=document.getElementById('li-user').value.trim();const p=document.getElementById('li-pass').value;if(auth.type==='user-pass'&&u!==auth.username){document.getElementById('login-err').textContent='Invalid username';return;}if(atob(auth.password)===p){document.getElementById('login-err').textContent='';setUnlocked();bootApp();}else document.getElementById('login-err').textContent='Incorrect password';}
-function setUnlocked(){sessionStorage.setItem('wasi_ok','1');}
-function isUnlocked(){return sessionStorage.getItem('wasi_ok')==='1';}
-function lockApp(){sessionStorage.removeItem('wasi_ok');document.getElementById('app').style.display='none';showLoginScreen();document.getElementById('auth-screen').style.display='flex';}
+function checkPinLogin(){const auth=LS('Lis_auth');if(auth&&atob(auth.pin)===pinLoginBuf){setUnlocked();bootApp();}else{updateLoginDots(true);document.getElementById('auth-card').classList.add('shk');setTimeout(()=>{pinLoginBuf='';updateLoginDots();document.getElementById('auth-card').classList.remove('shk');},500);}}
+function loginPass(){const auth=LS('Lis_auth');const u=document.getElementById('li-user').value.trim();const p=document.getElementById('li-pass').value;if(auth.type==='user-pass'&&u!==auth.username){document.getElementById('login-err').textContent='Invalid username';return;}if(atob(auth.password)===p){document.getElementById('login-err').textContent='';setUnlocked();bootApp();}else document.getElementById('login-err').textContent='Incorrect password';}
+function setUnlocked(){sessionStorage.setItem('Lis_ok','1');}
+function isUnlocked(){return sessionStorage.getItem('Lis_ok')==='1';}
+function lockApp(){sessionStorage.removeItem('Lis_ok');document.getElementById('app').style.display='none';showLoginScreen();document.getElementById('auth-screen').style.display='flex';}
 function openChangePIN(){document.getElementById('m-change-pin').classList.add('open');}
-function doChangePIN(){closeM('m-change-pin');LS('wasi_auth',null);lockApp();}
+function doChangePIN(){closeM('m-change-pin');LS('Lis_auth',null);lockApp();}
 
 // ═══════════════════════════════════════════════════
 // APP STATE
@@ -1103,8 +1103,8 @@ async function bootApp() {
   budgetMonth = new Date().getMonth();
   ensureMonth(appData, getMonthKey(budgetYear, budgetMonth));
 
-  const auth = LS('wasi_auth');
-  if (auth && auth.username) document.getElementById('nav-user-nm').textContent = auth.username || 'Wasi';
+  const auth = LS('Lis_auth');
+  if (auth && auth.username) document.getElementById('nav-user-nm').textContent = auth.username || 'Lis';
   if (appData.settings.theme) applyTheme(appData.settings.theme, null, true);
 
   updateDate();
@@ -1603,7 +1603,7 @@ function delBucket(aId,bId){const a=appData.accounts.find(x=>x.id===aId);if(!a?.
 function addHYSABucket(){const h=appData.accounts.filter(a=>a.type==='hysa');if(!h.length){showToast('No HYSA account found');return;}const a=h[0];if(!a.buckets)a.buckets=[];a.buckets.push({id:randId(),name:'New Bucket',amount:0,goal:0,color:'#c9921a',emoji:'💰'});saveData();renderSettingsPage();}
 function saveHYSABuckets(){saveData();renderAccounts();showToast('Buckets saved ✅');}
 function applyTheme(t,el,init){document.body.className=document.body.className.replace(/theme-\S+/g,'').trim();if(t!=='green')document.body.classList.add('theme-'+t);document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.toggle('sel',s.dataset.theme===t));if(!init){appData.settings.theme=t;saveData();}}
-function exportData(){const blob=new Blob([JSON.stringify(appData,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='wasi-finance-'+new Date().toISOString().split('T')[0]+'.json';a.click();}
+function exportData(){const blob=new Blob([JSON.stringify(appData,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Lis-finance-'+new Date().toISOString().split('T')[0]+'.json';a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{appData=JSON.parse(ev.target.result);ensureIntegrity();saveData();renderAll();showToast('Imported ✅');}catch{showToast('Invalid file');}};r.readAsText(f);}
 function resetAllData(){if(!confirm('Reset ALL data permanently?'))return;appData=defaultData();saveData();renderAll();showToast('Data reset');}
 
@@ -1643,7 +1643,7 @@ document.getElementById('ub-input').addEventListener('keydown',e=>{if(e.key==='E
 // ─── INIT ───
 function init(){
   updateDate();
-  const auth=LS('wasi_auth');
+  const auth=LS('Lis_auth');
   if(!auth){
     document.getElementById('auth-screen').style.display='flex';
     document.getElementById('auth-setup-step1').classList.remove('hide');
